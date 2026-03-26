@@ -1,0 +1,289 @@
+/* ===== TUBBERS LCD GAME — FINAL ===== */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #1a0a2e;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, #2d1250 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, #0d1f3a 0%, transparent 60%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   TITLE SCREEN  — fixed full-page overlay
+══════════════════════════════════════ */
+#title-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #1a0a2e;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, #2d1250 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, #0d1f3a 0%, transparent 60%);
+  cursor: pointer;
+}
+
+#title-screen img.title-logo {
+  width: min(700px, 90vw);
+  border-radius: 16px;
+  box-shadow: 0 0 60px rgba(255, 180, 220, 0.4);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 40px rgba(255, 180, 220, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 90px rgba(255, 180, 220, 0.7);
+  }
+}
+
+#title-screen .press-start {
+  margin-top: 36px;
+  font-size: 12px;
+  color: #ffb4dc;
+  letter-spacing: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+#title-screen .controls-hint {
+  font-size: 7px;
+  color: #886688;
+  margin-top: 14px;
+  letter-spacing: 1px;
+}
+
+/* ══════════════════════════════════════
+   GAME OVER SCREEN — fixed full-page
+══════════════════════════════════════ */
+#gameover-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.92);
+  cursor: pointer;
+}
+
+#gameover-screen.visible {
+  display: flex;
+}
+
+#gameover-screen .tamara-face {
+  width: min(340px, 80vw);
+  animation: tamaraFlicker 0.2s step-end infinite;
+}
+
+@keyframes tamaraFlicker {
+
+  0%,
+  100% {
+    filter: brightness(1) contrast(1.2);
+  }
+
+  50% {
+    filter: brightness(1.5) contrast(2) hue-rotate(10deg);
+  }
+}
+
+#gameover-screen .gameover-text {
+  font-size: 18px;
+  color: #ff3333;
+  margin-top: 28px;
+  text-shadow: 0 0 20px #ff0000;
+  animation: blink 0.6s step-end infinite;
+}
+
+#gameover-screen .score-display {
+  font-size: 9px;
+  color: #aaa;
+  margin-top: 16px;
+}
+
+#gameover-screen .restart-hint {
+  font-size: 8px;
+  color: #888;
+  margin-top: 28px;
+  animation: blink 1.2s step-end infinite;
+}
+
+/* ══════════════════════════════════════
+   GAME AREA — the scrollable backdrop
+══════════════════════════════════════ */
+#game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ══════════════════════════════════════
+   DEVICE — uses Tubers_Backdrop as wide bg
+   Both Tubers_Backdrop.png and gameCase.png are 
+   exactly 1921x1081 pixels (16:9).
+══════════════════════════════════════ */
+#device {
+  position: relative;
+  width: 900px;
+  aspect-ratio: 1921 / 1081;
+  max-width: 98vw;
+  max-height: 90vh;
+}
+
+@media (max-height: 600px) {
+  #device {
+    width: 700px;
+  }
+}
+
+/* ── Backdrop: fills the full device div ── */
+#device-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   LCD SCREEN — positioned under gameCase.png
+
+   Precise pixel bounds calculated from gameCase.png 
+   (1921x1081) inner transparent window:
+   Left: 31.96%
+   Top: 21.28%
+   Width: 35.97%
+   Height: 46.44%
+══════════════════════════════════════ */
+#lcd-screen {
+  position: absolute;
+  left: 31.96%;
+  top: 21.28%;
+  width: 35.97%;
+  height: 46.44%;
+  background: #8a9d6b;
+  overflow: hidden;
+  z-index: 5;
+  /* Subtle LCD tint */
+  filter: sepia(8%) saturate(90%) hue-rotate(15deg) brightness(0.95);
+}
+
+/* All sprites inside LCD */
+.sprite {
+  position: absolute;
+  pointer-events: none;
+  visibility: hidden;
+  z-index: 3;
+}
+
+/* ══════════════════════════════════════
+   GAME CASE — pink shell overlaid on top
+   gameCase.png is 1921x1081. It sits exactly
+   over the 1921x1081 backdrop.
+══════════════════════════════════════ */
+#case-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── CHANNEL and LOCK button click zones ── */
+/* Approx button spots in the 1921x1081 overlay */
+.btn-zone {
+  position: absolute;
+  z-index: 20;
+  cursor: pointer;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  width: 6%;
+  height: 10%;
+}
+
+#btn-channel {
+  top: 76%;
+  left: 36%;
+}
+
+#btn-lock {
+  top: 76%;
+  left: 58%;
+}
+
+.btn-zone:active {
+  opacity: 0.6;
+}
+
+/* ── Score HUD inside LCD ── */
+#score-hud {
+  position: absolute;
+  top: 1%;
+  right: 1%;
+  font-size: 6px;
+  color: #3a4a28;
+  background: rgba(138, 157, 107, 0.75);
+  padding: 2px 5px;
+  border-radius: 3px;
+  z-index: 8;
+  display: none;
+}
+
+/* ══════════════════════════════════════
+   CONTROLS LEGEND  (below device)
+══════════════════════════════════════ */
+#controls-legend {
+  font-size: 7px;
+  color: #554466;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 2;
+}
+
+#controls-legend span {
+  color: #886688;
+}
