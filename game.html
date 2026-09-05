@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUBBERS — LCD Handheld Game</title>
+  <meta name="description"
+    content="tubbers — a retro LCD handheld game. Keep your tubbers happy, banish Tamara, and survive!">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- TITLE SCREEN (fixed overlay) -->
+  <div id="title-screen">
+    <img class="title-logo" src="tubbers_withLogo.png" alt="TUBBERS">
+    <p class="press-start">PRESS ANY BUTTON TO START</p>
+    <p class="controls-hint">◀ CHANNEL &nbsp;&nbsp; LOCK ▶</p>
+  </div>
+
+  <!-- GAME OVER SCREEN (fixed overlay) -->
+  <div id="gameover-screen">
+    <img class="tamara-face" src="TamaraOverlay.png" alt="TAMARA">
+    <p class="gameover-text">GAME OVER</p>
+    <p class="score-display" id="gameover-score">SCORE: 0</p>
+    <p class="restart-hint">CLICK / PRESS TO RESTART</p>
+  </div>
+
+  <!-- GAME AREA -->
+  <div id="game-area">
+    <div id="device">
+
+      <!-- Wide backdrop: 3D tubbers flanking the case -->
+      <img id="device-backdrop" src="Tubers_Backdrop.png" alt="" draggable="false">
+
+      <!-- Pink game case overlay (has transparent screen hole) -->
+      <img id="case-img" src="gameCase.png" alt="" draggable="false">
+
+      <!-- LCD screen content — sprites injected by JS -->
+      <div id="lcd-screen">
+        <!-- Score HUD inside screen -->
+        <div id="score-hud">SCR:0</div>
+        <!-- Sprites appended here by game.js -->
+      </div>
+
+      <!-- Button click zones -->
+      <button id="btn-channel" class="btn-zone" aria-label="CHANNEL"></button>
+      <button id="btn-lock" class="btn-zone" aria-label="LOCK"></button>
+
+    </div>
+
+    <!-- Keyboard hint -->
+    <div id="controls-legend">
+      <span>[C]</span> CHANNEL &nbsp;&nbsp;
+      <span>[SPACE]</span> or <span>[L]</span> LOCK
+      &nbsp;&nbsp;— keyboard supported
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+
+</html>
